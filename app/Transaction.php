@@ -15,6 +15,7 @@ class Transaction extends Model
     //protected $table = 'users';
     public function buyer()
     {
+        dd('i am herre');
         return $this->belongsToMany(Buyer::class);
     }
     public function product()
