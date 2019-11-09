@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Buyer;
+namespace App\Http\Controllers\Buyer; 
 
 use App\Buyer;
 use Illuminate\Http\Request;
@@ -18,7 +18,9 @@ class BuyerCategoryController extends ApiController
         $categories = $buyer->transactions()->with('product.categories')
         ->get()
         ->pluck('product.categories')
-        ->collapse();
+        ->collapse()
+        ->unique()
+        ->values();
         return $this->showAll($categories);
     }    
 }
