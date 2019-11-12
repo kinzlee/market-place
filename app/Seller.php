@@ -15,7 +15,8 @@ class Seller extends User
     }
     public function products()
     {
-        return $this->hasOne(Product::class);
+        // dd('i am here');
+        return $this->hasMany(Product::class);
     }
     protected $table = 'users';
     

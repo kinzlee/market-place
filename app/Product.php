@@ -25,7 +25,7 @@ class Product extends Model
     ];
     
     protected $date = ['deleted_at'];
-   // protected $table = 'products';
+    protected $table = 'products';
 
 
     public function isAvailable()
