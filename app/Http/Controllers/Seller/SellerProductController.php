@@ -7,6 +7,7 @@ use App\User;
 use App\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class SellerProductController extends ApiController
@@ -30,7 +31,6 @@ class SellerProductController extends ApiController
      */
     public function store(Request $request, User $seller)
     {
-
         $validation = [
             'name' => 'required',
             'description' => 'required',
@@ -43,7 +43,7 @@ class SellerProductController extends ApiController
         $data = $request->all();
 
         $data['status'] = product::UNAVAILABLE_PRODUCT;
-        $data['image'] = 'gg3.png';
+        $data['image'] = $request->image->store('');
         $data['seller_id'] = $seller->id;
         $product = product::create($data);
         return $this->showOne($product);
@@ -80,6 +80,11 @@ class SellerProductController extends ApiController
                 return $this->errorResponse('An active product must have at least one category', 409);
             }
         }
+        if ($request->hasFile('image')) {
+            Storage::delete($product->image);
+
+            $product->image = $request->image->store('');
+        }
 
         if ($product->isClean()) {
             return $this->errorReseponse('you need to specify a new product or value to be updated', 409);
@@ -101,7 +106,8 @@ class SellerProductController extends ApiController
         $this->checkSeller($seller, $product);
         //dd('i am here');
         $product->delete();
-        $this->showOne($product);
+        Storage::delete($product->image);
+        return $this->showOne($product);
     }
 
     public function checkSeller(Seller $seller, Product $product)
